@@ -202,16 +202,28 @@ jQuery(function() {
 		}
 
 	};
-
+	
 	// Initialize the map
 	map = new Ushahidi.Map('map', config);
-	map.addLayer(Ushahidi.GEOJSON, {
-		name: "<?php echo Kohana::lang('ui_main.reports'); ?>",
-		url: reportsURL,
-		transform: false
-	}, true, true);
-
-
+	map.addControl(new OpenLayers.Control.LayerSwitcher());
+	
+	//map.addLayer(Ushahidi.GEOJSON, {
+	//	name: "<?php echo Kohana::lang('ui_main.reports'); ?>",
+	//	url: reportsURL,
+	//	transform: false
+	//}, true, true);
+	
+	
+	//adding a new heatmap layer
+	var layer, heatmap;
+	map = new OpenLayers.Map( 'map');
+	layer = new OpenLayers.Layer.OSM();
+	
+	map.addLayer(layer);
+	//heatmap = new OpenLayers.Layer.Heatmap( "Heatmap Layer", map, layer, {visible: true, radius:10}, {isBaseLayer: false, opacity: 0.3, projection: new OpenLayers.Projection("EPSG:4326")});
+	//map.addLayers([layer, heatmap]);
+	//heatmap.setDataSet(transformedUshahidiData);
+				
 	// Register the referesh timeline function as a callback
 	map.register("filterschanged", refreshTimeline);
 	setTimeout(function() { refreshTimeline({
