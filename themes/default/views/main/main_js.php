@@ -160,7 +160,7 @@ jQuery(function() {
 	// Render thee JavaScript for the base layers so that
 	// they are accessible by Ushahidi.js
 	<?php echo map::layers_js(FALSE); ?>
-	
+
 	// Map configuration
 	var config = {
 
@@ -202,27 +202,104 @@ jQuery(function() {
 		}
 
 	};
-	
+
+	var ushahidiData={
+					max: 2,
+					data: <?php
+/**
+	 * Generate Clustered Data
+	 * 
+	 * @return array $data
+	 */
+	function getData()
+	{
+		$data = array();
+		$markers = reports::fetch_incidents();
+		
+		foreach ($markers as $marker)
+		{
+			$skip = FALSE;
+			// To generate a good heatmap we need to combine lat/lons
+			// at 3 decimal place values
+			$marker->latitude = round($marker->latitude, 3);
+			$marker->longitude = round($marker->longitude, 3);
+
+			// Find item with similar lat/lon?
+			foreach ($data as $key => $value)
+			{
+				if ($data[$key]['lat'] == $marker->latitude 
+					AND $data[$key]['lon'] == $marker->longitude)
+				{
+					$data[$key]['count'] = $data[$key]['count'] + 1;
+					$skip = TRUE;
+					break 1;
+				}
+			}
+
+			if ( ! $skip)
+			{
+				$data[] = array(
+					'lat' => round($marker->latitude, 3),
+					'lon' => round($marker->longitude, 3),
+					'count' => 1
+					);
+			}
+		}
+
+		return json_encode($data);
+	}
+	echo getData();
+?>
+				};
+	//console.log(ushahidiData.data);
+				var transformedUshahidiData = { max: ushahidiData.max , data: [] },
+					data = ushahidiData.data,
+					datalen = data.length,
+					nudata = [];
+
+				while(datalen--){
+					nudata.push({
+						lonlat: new OpenLayers.LonLat(data[datalen].lon, data[datalen].lat),
+						count: data[datalen].count
+					});
+				}
+
+				transformedUshahidiData.data = nudata;
+				
+	/*			
 	// Initialize the map
-	map = new Ushahidi.Map('map', config);
-	map.addControl(new OpenLayers.Control.LayerSwitcher());
+	//map = new Ushahidi.Map('map', config);
 	
-	//map.addLayer(Ushahidi.GEOJSON, {
-	//	name: "<?php echo Kohana::lang('ui_main.reports'); ?>",
-	//	url: reportsURL,
-	//	transform: false
-	//}, true, true);
+	map.addLayer(Ushahidi.DEFAULT, {
+		transform: false
+	}, true, true);
 	
+	map.addLayer(Ushahidi.GEOJSON, {
+		name: "<?php echo Kohana::lang('ui_main.reports'); ?>",
+		url: reportsURL,
+		transform: false
+	}, true, true);
+	
+	map.addLayer(Ushahidi.GEOJSON, {
+		name: "New Layer",
+		//url: reportsURL,
+		transform: false
+	}, true, true);
+	*/
 	
 	//adding a new heatmap layer
 	var layer, heatmap;
-	map = new OpenLayers.Map( 'map');
+	map = new OpenLayers.Map('map');
 	layer = new OpenLayers.Layer.OSM();
 	
-	map.addLayer(layer);
-	//heatmap = new OpenLayers.Layer.Heatmap( "Heatmap Layer", map, layer, {visible: true, radius:10}, {isBaseLayer: false, opacity: 0.3, projection: new OpenLayers.Projection("EPSG:4326")});
-	//map.addLayers([layer, heatmap]);
-	//heatmap.setDataSet(transformedUshahidiData);
+	//map.addLayer(layer);
+	
+	heatmap = new OpenLayers.Layer.Heatmap( "Heatmap Layer", map, layer, {visible: true, radius:10}, {isBaseLayer: false, opacity: 0.3, projection: new OpenLayers.Projection("EPSG:4326")});
+	map.addLayers([layer, heatmap]);
+	map.zoomToMaxExtent();
+
+	heatmap.setDataSet(transformedUshahidiData);
+
 				
 	// Register the referesh timeline function as a callback
 	map.register("filterschanged", refreshTimeline);
