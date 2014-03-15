@@ -1,4 +1,4 @@
-<?php
+ <?php
 /**
  * Main cluster js file.
  * 
@@ -202,7 +202,11 @@ jQuery(function() {
 		}
 
 	};
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> 1f919e0... Add plugin files and implement heatmap as a layer, but unable to toggle
 	// Initialize the map
 	map = new Ushahidi.Map('map', config);
 	map.addLayer(Ushahidi.GEOJSON, {
@@ -210,8 +214,18 @@ jQuery(function() {
 		url: reportsURL,
 		transform: false
 	}, true, true);
+<<<<<<< HEAD
 
 
+=======
+	
+	map.addLayer(Ushahidi.HEATMAP, {
+		name: "heat map",
+		hmapoptions: {visible: true, radius: 10},
+		otheroptions: {isBaseLayer: false, opacity: 0.3, projection: Ushahidi.proj_4326}
+	}, true, true);
+	
+>>>>>>> 1f919e0... Add plugin files and implement heatmap as a layer, but unable to toggle
 	// Register the referesh timeline function as a callback
 	map.register("filterschanged", refreshTimeline);
 	setTimeout(function() { refreshTimeline({
