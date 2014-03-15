@@ -1,4 +1,4 @@
-<?php
+ <?php
 /**
  * Main cluster js file.
  * 
@@ -205,39 +205,6 @@ jQuery(function() {
 
 	};
 	
-	// Makes the heatmap
-	var ushahidiData={
-					max: 2,
-					data: Ushahidi.heatmapData
-				};
-	
-	var transformedUshahidiData = { max: ushahidiData.max , data: [] },
-		data = ushahidiData.data,
-		datalen = data.length,
-		nudata = [];
-
-	while(datalen--){
-		nudata.push({
-			lonlat: new OpenLayers.LonLat(data[datalen].lon, data[datalen].lat),
-			count: data[datalen].count
-		});
-	}
-
-	transformedUshahidiData.data = nudata;
-
-	var layer, heatmap;
-	map = new OpenLayers.Map('map');
-	layer = new OpenLayers.Layer.OSM();
-	
-	map.addLayer(layer);
-	
-	heatmap = new OpenLayers.Layer.Heatmap( "Heatmap Layer", map, layer, {visible: true, radius:10}, {isBaseLayer: false, opacity: 0.3, projection: new OpenLayers.Projection("EPSG:4326")});
-	map.addLayers([layer, heatmap]);
-	map.zoomToMaxExtent();
-
-	heatmap.setDataSet(transformedUshahidiData);
-
-	/* Commented out Ushahidi's initialization just to test out heatmap
 	// Initialize the map
 	map = new Ushahidi.Map('map', config);
 	map.addLayer(Ushahidi.GEOJSON, {
@@ -245,8 +212,13 @@ jQuery(function() {
 		url: reportsURL,
 		transform: false
 	}, true, true);
-	*/
-
+	
+	map.addLayer(Ushahidi.HEATMAP, {
+		name: "heat map",
+		hmapoptions: {visible: true, radius: 10},
+		otheroptions: {isBaseLayer: false, opacity: 0.3, projection: Ushahidi.proj_4326}
+	}, true, true);
+	
 	// Register the referesh timeline function as a callback
 	map.register("filterschanged", refreshTimeline);
 	setTimeout(function() { refreshTimeline({

@@ -55,6 +55,9 @@
 		KML: "KML",
 
 		DEFAULT: "default",
+		
+		// Heat map Layer type
+		HEATMAP: "heatmap",
 
 		/**
 		 * APIProperty: baseURL
@@ -251,7 +254,7 @@
 						if (typeof(feature.attributes.opacity) != 'undefined' && 
 							feature.attributes.opacity != '')
 						{
-							return feature.attributes.opacity
+							return feature.attributes.opacity;
 						}
 						else if (feature_icon!=="")
 						{
@@ -539,6 +542,45 @@
 			return this;
 		}
 		
+		// Heatmap layer
+		if(layerType == Ushahidi.HEATMAP){
+			//this.deleteLayer(Ushahidi.HEATMAP);
+			
+			if(options == undefined){
+				options = {};
+			}
+			
+			// Makes the heatmap
+			var ushahidiData={
+							max: 2,
+							data: Ushahidi.heatmapData
+						};
+			
+			var transformedUshahidiData = { max: ushahidiData.max , data: [] },
+				data = ushahidiData.data,
+				datalen = data.length,
+				nudata = [];
+		
+			while(datalen--){
+				nudata.push({
+					lonlat: new OpenLayers.LonLat(data[datalen].lon, data[datalen].lat),
+					count: data[datalen].count
+				});
+			}
+		
+			transformedUshahidiData.data = nudata;
+			
+			//var heatmap = new OpenLayers.Layer.Heatmap( "Heatmap Layer", this._olMap, this._olMap, {visible: true, radius:10}, {isBaseLayer: false, opacity: 0.3, projection: Ushahidi.proj_4326});
+			var heatmap = new OpenLayers.Layer.Heatmap(options.name, this._olMap, this._olMap, options.hmapoptions, options.otheroptions);
+			
+			this._olMap.addLayer(heatmap);
+			this._olMap.zoomToMaxExtent();
+			
+			heatmap.setDataSet(transformedUshahidiData);
+			
+			return this;
+		}
+		
 		// Setup default protocol format
 		var protocolFormat = new OpenLayers.Format.GeoJSON();
 		// Switch protocol format if layer is KML
@@ -573,7 +615,7 @@
 				feature.geometry.x = point.x;
 				feature.geometry.y = point.y;
 			}
-		}
+		};
 
 		// Layer options
 		var layerOptions = {
@@ -684,7 +726,7 @@
 				"featureunselected": this.onFeatureUnselect,
 				scope: this
 			});
-		}
+		};
 		// Register display layer fn to run on load end
 		layer.events.register('loadend', this, displayLayer);
 		
@@ -703,7 +745,7 @@
 		this._isLoaded = 1;
 
 		return this;
-	}
+	};
 
 	/**
 	 * APIMethod: updateReportFilters
