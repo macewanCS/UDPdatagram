@@ -56,6 +56,9 @@
 
 		DEFAULT: "default",
 
+		HEATMAP: "heatmap",
+		
+		TESTMARKERS: "testMarkers",
 		/**
 		 * APIProperty: baseURL
 		 * Base URL for the application
@@ -157,7 +160,7 @@
 							}
 							else if (feature_count > 100)
 							{
-								return Ushahidi.markerRadius * 6;
+								return Ushahidi.markerRadius * 12;
 							}
 							else if (feature_count > 10)
 							{
@@ -485,12 +488,12 @@
 	 * keepOnTop - {bool} Whether to keep this layer above others.
 	 */
 	Ushahidi.Map.prototype.addLayer = function(layerType, options, save, keepOnTop) {
+		
 		// Default markers layer
 		if (layerType == Ushahidi.DEFAULT) {
 			this.deleteLayer("default");
 			
 			var markers = null;
-			
 			if (options == undefined) {
 				options = {};
 			}
@@ -502,18 +505,20 @@
 				markers = new OpenLayers.Layer.Vector("default", {
 					styleMap: styleMap
 				});
-
+				
 				// Add features to the vector layer
-				makers.addFeatures(new OpenLayers.Feature.Vector(this._olMap.getCenter()));
-
+				markers.addFeatures(new OpenLayers.Feature.Vector(this._olMap.getCenter()));
+				
+				
 			} else {
 				markers = new OpenLayers.Layer.Markers("default");
 				markers.addMarker(new OpenLayers.Marker(this._olMap.getCenter()));
+				
 			}
 
 			// Add the layer to the map
 			this._olMap.addLayer(markers);
-
+			
 			// Is map-click detection enabled?
 			if (options.detectMapClicks == undefined || options.detectMapClicks) {
 				var context = this;
@@ -536,6 +541,58 @@
 
 			this._isLoaded = 1;
 
+			return this;
+		}
+		//Test layer
+		if(layerType == Ushahidi.TESTMARKERS){
+						
+			var testMarkers = null;
+			
+			testMarkers = new OpenLayers.Layer.Markers("Test Marker");
+				
+			var lonlat = new OpenLayers.LonLat(100, 100);
+			testMarkers.addMarker(new OpenLayers.Marker(lonlat));
+			
+			// Add the layer to the map
+			this._olMap.addLayer(testMarkers);
+			
+			
+			this._isLoaded = 1;
+			return this;
+		}
+		
+		if (layerType == Ushahidi.HEATMAP) {
+			this.deleteLayer("Heatmap Layer");
+			
+			var ushahidiData={
+					max: 2,
+					data: " <?php echo $heatmap_data; ?>" 
+				};
+				//console.log("<?php echo $heatmap_data; ?>");
+				var transformedUshahidiData = { max: ushahidiData.max , data: [] },
+					data = ushahidiData.data,
+					datalen = data.length,
+					nudata = [];
+
+				// in order to use the OpenLayers Heatmap Layer we have to transform our data into 
+				// { max: <max>, data: [{lonlat: <OpenLayers.LonLat>, count: <count>},...]}
+
+				while(datalen--){
+					nudata.push({
+						lonlat: new OpenLayers.LonLat(data[datalen].lon, data[datalen].lat),
+						count: data[datalen].count
+					});
+				}
+
+				transformedUshahidiData.data = nudata;
+			var layer, heatmap;
+			layer = new OpenLayers.Layer.OSM();
+			
+			heatmap = new OpenLayers.Layer.Heatmap( "Heatmap Layer", this._olMap, layer, {visible: true, radius:10}, {isBaseLayer: false, opacity: 0.3, projection: new OpenLayers.Projection("EPSG:4326")});
+			this._olMap.addLayers([layer, heatmap]);
+			heatmap.setDataSet(transformedUshahidiData);
+			
+			this._isLoaded = 1;
 			return this;
 		}
 		
