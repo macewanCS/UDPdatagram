@@ -22,6 +22,8 @@ Ushahidi.markerRadius = <?php echo $marker_radius; ?>;
 Ushahidi.markerOpacity = <?php echo $marker_opacity; ?>;
 Ushahidi.markerStokeWidth = <?php echo $marker_stroke_width; ?>;
 Ushahidi.markerStrokeOpacity = <?php echo $marker_stroke_opacity; ?>;
+// Initialize heat map namespace
+Ushahidi.heatmapData = <?php echo $heatmap_data ?>;
 
 // Default to most active month
 var startTime = <?php echo $active_startDate ?>;
@@ -202,7 +204,40 @@ jQuery(function() {
 		}
 
 	};
+	
+	// Makes the heatmap
+	var ushahidiData={
+					max: 2,
+					data: Ushahidi.heatmapData
+				};
+	
+	var transformedUshahidiData = { max: ushahidiData.max , data: [] },
+		data = ushahidiData.data,
+		datalen = data.length,
+		nudata = [];
 
+	while(datalen--){
+		nudata.push({
+			lonlat: new OpenLayers.LonLat(data[datalen].lon, data[datalen].lat),
+			count: data[datalen].count
+		});
+	}
+
+	transformedUshahidiData.data = nudata;
+
+	var layer, heatmap;
+	map = new OpenLayers.Map('map');
+	layer = new OpenLayers.Layer.OSM();
+	
+	map.addLayer(layer);
+	
+	heatmap = new OpenLayers.Layer.Heatmap( "Heatmap Layer", map, layer, {visible: true, radius:10}, {isBaseLayer: false, opacity: 0.3, projection: new OpenLayers.Projection("EPSG:4326")});
+	map.addLayers([layer, heatmap]);
+	map.zoomToMaxExtent();
+
+	heatmap.setDataSet(transformedUshahidiData);
+
+	/* Commented out Ushahidi's initialization just to test out heatmap
 	// Initialize the map
 	map = new Ushahidi.Map('map', config);
 	map.addLayer(Ushahidi.GEOJSON, {
@@ -210,7 +245,7 @@ jQuery(function() {
 		url: reportsURL,
 		transform: false
 	}, true, true);
-
+	*/
 
 	// Register the referesh timeline function as a callback
 	map.register("filterschanged", refreshTimeline);
