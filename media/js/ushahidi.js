@@ -254,7 +254,7 @@
 						if (typeof(feature.attributes.opacity) != 'undefined' && 
 							feature.attributes.opacity != '')
 						{
-							return feature.attributes.opacity
+							return feature.attributes.opacity;
 						}
 						else if (feature_icon!=="")
 						{
@@ -550,50 +550,124 @@
 			
 			testMarkers = new OpenLayers.Layer.Markers("Test Marker");
 				
-			var lonlat = new OpenLayers.LonLat(100, 100);
-			testMarkers.addMarker(new OpenLayers.Marker(lonlat));
+			//var lonlat = new OpenLayers.LonLat(100, 100);
+			//testMarkers.addMarker(new OpenLayers.Marker(lonlat));
 			
 			// Add the layer to the map
 			this._olMap.addLayer(testMarkers);
+			
+			// Create some random markers with random icons
+		    var icons = [
+		        "alligator.png",
+		        "chicken-2.png",
+		        "elephants.png",       
+		        "pets.png",
+		        "snakes.png",
+		        "wildlifecrossing.png",
+		        "animal-shelter-export.png",
+		        "cow-export.png",
+		        "frog-2.png",
+		        "pig.png",
+		        "spider.png",
+		        "zoo.png",
+		        "ant-export.png",
+		        "deer.png",
+		        "lobster-export.png",
+		        "rodent.png",
+		        "tiger-2.png",
+		        "bats.png",
+		        "dolphins.png",
+		        "monkey-export.png",
+		        "seals.png",
+		        "turtle-2.png",
+		        "birds-2.png",
+		        "duck-export.png",
+		        "mosquito.png",
+		        "shark-export.png",
+		        "veterinary.png",
+		        "butterfly-2.png",
+		        "eggs.png",
+		        "penguin-2.png",
+		        "snail.png",
+		        "whale-2.png"
+		    ];
+			
+			for(var i=0; i< 150; i++) {
+		        // Compute a random icon and lon/lat position.
+		        var icon = Math.floor(Math.random() * icons.length);
+		        var px = Math.random() * 360 - 180;
+		        var py = Math.random() * 170 - 85;
+		    
+		        // Create size, pixel and icon instances
+		        var size = new OpenLayers.Size(32, 37);
+		        var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
+		        var icon = new OpenLayers.Icon("./../icons/"+icons[icon], size, offset);
+		        icon.setOpacity(0.7);
+		        
+		        // Create a lonlat instance and transform it to the map projection.
+		        var lonlat = new OpenLayers.LonLat(px, py);
+		        lonlat.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
+		        
+		        // Add the marker
+		        var marker = new OpenLayers.Marker(lonlat, icon);
+		        
+		        // Event to handler when the mouse is over
+		        // Inflate the icon and change its opacity
+		        marker.events.register("mouseover", marker, function() {
+		            this.inflate(1.2);
+		            this.setOpacity(1);
+		        });
+		        // Event to handler when the mouse is out
+		        // Inflate the icon and change its opacity
+		        marker.events.register("mouseout", marker, function() {
+		            this.inflate(1/1.2);
+		            this.setOpacity(0.7);
+		        });
+		        
+		        testMarkers.addMarker(marker);
+		    }
 			
 			
 			this._isLoaded = 1;
 			return this;
 		}
 		
-		if (layerType == Ushahidi.HEATMAP) {
-			this.deleteLayer("Heatmap Layer");
-			
-			var ushahidiData={
+			if(layerType == Ushahidi.HEATMAP){
+				//this.deleteLayer(Ushahidi.HEATMAP);
+				
+				if(options == undefined){
+					options = {};
+				}
+				
+				// Makes the heatmap
+				var ushahidiData={
 					max: 2,
-					data: " <?php echo $heatmap_data; ?>" 
+					data: Ushahidi.heatmapData
 				};
-				//console.log("<?php echo $heatmap_data; ?>");
+				
 				var transformedUshahidiData = { max: ushahidiData.max , data: [] },
-					data = ushahidiData.data,
-					datalen = data.length,
-					nudata = [];
-
-				// in order to use the OpenLayers Heatmap Layer we have to transform our data into 
-				// { max: <max>, data: [{lonlat: <OpenLayers.LonLat>, count: <count>},...]}
-
+				data = ushahidiData.data,
+				datalen = data.length,
+				nudata = [];
+				
 				while(datalen--){
 					nudata.push({
-						lonlat: new OpenLayers.LonLat(data[datalen].lon, data[datalen].lat),
-						count: data[datalen].count
+					lonlat: new OpenLayers.LonLat(data[datalen].lon, data[datalen].lat),
+					count: data[datalen].count
 					});
 				}
-
+				
 				transformedUshahidiData.data = nudata;
-			var layer, heatmap;
-			layer = new OpenLayers.Layer.OSM();
-			
-			heatmap = new OpenLayers.Layer.Heatmap( "Heatmap Layer", this._olMap, layer, {visible: true, radius:10}, {isBaseLayer: false, opacity: 0.3, projection: new OpenLayers.Projection("EPSG:4326")});
-			this._olMap.addLayers([layer, heatmap]);
-			heatmap.setDataSet(transformedUshahidiData);
-			
-			this._isLoaded = 1;
-			return this;
+				
+				//var heatmap = new OpenLayers.Layer.Heatmap( "Heatmap Layer", this._olMap, this._olMap, {visible: true, radius:10}, {isBaseLayer: false, opacity: 0.3, projection: Ushahidi.proj_4326});
+				var heatmap = new OpenLayers.Layer.Heatmap(options.name, this._olMap, this._olMap, options.hmapoptions, options.otheroptions);
+				
+				this._olMap.addLayer(heatmap);
+				this._olMap.zoomToMaxExtent();
+				
+				heatmap.setDataSet(transformedUshahidiData);
+				//this._isLoaded = 1;
+				return this;
 		}
 		
 		// Setup default protocol format
@@ -630,7 +704,7 @@
 				feature.geometry.x = point.x;
 				feature.geometry.y = point.y;
 			}
-		}
+		};
 
 		// Layer options
 		var layerOptions = {
@@ -741,7 +815,7 @@
 				"featureunselected": this.onFeatureUnselect,
 				scope: this
 			});
-		}
+		};
 		// Register display layer fn to run on load end
 		layer.events.register('loadend', this, displayLayer);
 		
@@ -760,7 +834,7 @@
 		this._isLoaded = 1;
 
 		return this;
-	}
+	};
 
 	/**
 	 * APIMethod: updateReportFilters
