@@ -570,14 +570,16 @@
 		
 			transformedUshahidiData.data = nudata;
 			
-			//var heatmap = new OpenLayers.Layer.Heatmap( "Heatmap Layer", this._olMap, this._olMap, {visible: true, radius:10}, {isBaseLayer: false, opacity: 0.3, projection: Ushahidi.proj_4326});
-			var heatmap = new OpenLayers.Layer.Heatmap(options.name, this._olMap, this._olMap, options.hmapoptions, options.otheroptions);
+			var layer = new OpenLayers.Layer.OSM();
 			
-			this._olMap.addLayer(heatmap);
+			//var heatmap = new OpenLayers.Layer.Heatmap( "Heatmap Layer", this._olMap, this._olMap, {visible: true, radius:10}, {isBaseLayer: false, opacity: 0.3, projection: Ushahidi.proj_4326});
+			var heatmap = new OpenLayers.Layer.Heatmap(options.name, this._olMap, layer, options.hmapoptions, options.otheroptions);
+			
+			this._olMap.addLayers([layer, heatmap]);
 			this._olMap.zoomToMaxExtent();
 			
 			heatmap.setDataSet(transformedUshahidiData);
-			
+
 			return this;
 		}
 		
