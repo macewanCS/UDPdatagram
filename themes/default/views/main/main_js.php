@@ -22,6 +22,8 @@ Ushahidi.markerRadius = <?php echo $marker_radius; ?>;
 Ushahidi.markerOpacity = <?php echo $marker_opacity; ?>;
 Ushahidi.markerStokeWidth = <?php echo $marker_stroke_width; ?>;
 Ushahidi.markerStrokeOpacity = <?php echo $marker_stroke_opacity; ?>;
+// Initialize heat map namespace
+Ushahidi.heatmapData = <?php echo $heatmap_data ?>;
 
 // Default to most active month
 var startTime = <?php echo $active_startDate ?>;
@@ -202,73 +204,10 @@ jQuery(function() {
 		}
 
 	};
-
-	var ushahidiData={
-					max: 2,
-					data: <?php
-/**
-	 * Generate Clustered Data
-	 * 
-	 * @return array $data
-	 */
-	function getData()
-	{
-		$data = array();
-		$markers = reports::fetch_incidents();
-		
-		foreach ($markers as $marker)
-		{
-			$skip = FALSE;
-			// To generate a good heatmap we need to combine lat/lons
-			// at 3 decimal place values
-			$marker->latitude = round($marker->latitude, 3);
-			$marker->longitude = round($marker->longitude, 3);
-
-			// Find item with similar lat/lon?
-			foreach ($data as $key => $value)
-			{
-				if ($data[$key]['lat'] == $marker->latitude 
-					AND $data[$key]['lon'] == $marker->longitude)
-				{
-					$data[$key]['count'] = $data[$key]['count'] + 1;
-					$skip = TRUE;
-					break 1;
-				}
-			}
-
-			if ( ! $skip)
-			{
-				$data[] = array(
-					'lat' => round($marker->latitude, 3),
-					'lon' => round($marker->longitude, 3),
-					'count' => 1
-					);
-			}
-		}
-
-		return json_encode($data);
-	}
-	echo getData();
-?>
-				};
-	//console.log(ushahidiData.data);
-				var transformedUshahidiData = { max: ushahidiData.max , data: [] },
-					data = ushahidiData.data,
-					datalen = data.length,
-					nudata = [];
-
-				while(datalen--){
-					nudata.push({
-						lonlat: new OpenLayers.LonLat(data[datalen].lon, data[datalen].lat),
-						count: data[datalen].count
-					});
-				}
-
-				transformedUshahidiData.data = nudata;
-				
-	/*			
+	
+			
 	// Initialize the map
-	//map = new Ushahidi.Map('map', config);
+	map = new Ushahidi.Map('map', config);
 	
 	map.addLayer(Ushahidi.DEFAULT, {
 		transform: false
@@ -280,26 +219,16 @@ jQuery(function() {
 		transform: false
 	}, true, true);
 	
-	map.addLayer(Ushahidi.GEOJSON, {
-		name: "New Layer",
-		//url: reportsURL,
+	map.addLayer(Ushahidi.TESTMARKERS, {
 		transform: false
 	}, true, true);
-	*/
 	
-	//adding a new heatmap layer
-	var layer, heatmap;
-	map = new OpenLayers.Map('map');
-	layer = new OpenLayers.Layer.OSM();
-	
-	//map.addLayer(layer);
-	
-	heatmap = new OpenLayers.Layer.Heatmap( "Heatmap Layer", map, layer, {visible: true, radius:10}, {isBaseLayer: false, opacity: 0.3, projection: new OpenLayers.Projection("EPSG:4326")});
-	map.addLayers([layer, heatmap]);
-	map.zoomToMaxExtent();
-
-	heatmap.setDataSet(transformedUshahidiData);
-
+	//Heatmap layer
+	map.addLayer(Ushahidi.HEATMAP, {
+		name: "HEAT MAP",
+		hmapoptions: {visible: true, radius: 10},
+		otheroptions: {isBaseLayer: false, opacity: 0.3, projection: Ushahidi.proj_4326}
+	}, true, true);
 				
 	// Register the referesh timeline function as a callback
 	map.register("filterschanged", refreshTimeline);
