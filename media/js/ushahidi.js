@@ -547,7 +547,6 @@
 		if(layerType == Ushahidi.TESTMARKERS){
 						
 			var testMarkers = null;
-			
 			testMarkers = new OpenLayers.Layer.Markers("Test Marker");
 				
 			//var lonlat = new OpenLayers.LonLat(100, 100);
@@ -601,15 +600,15 @@
 		        // Create size, pixel and icon instances
 		        var size = new OpenLayers.Size(32, 37);
 		        var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-		        var icon = new OpenLayers.Icon("./../icons/"+icons[icon], size, offset);
-		        icon.setOpacity(0.7);
+		        var iconz = new OpenLayers.Icon("http://localhost/UDPdatagram/media/icons/"+icons[icon], size, offset);
+		        iconz.setOpacity(0.7);
 		        
 		        // Create a lonlat instance and transform it to the map projection.
 		        var lonlat = new OpenLayers.LonLat(px, py);
 		        lonlat.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
 		        
 		        // Add the marker
-		        var marker = new OpenLayers.Marker(lonlat, icon);
+		        var marker = new OpenLayers.Marker(lonlat, iconz);
 		        
 		        // Event to handler when the mouse is over
 		        // Inflate the icon and change its opacity
@@ -625,6 +624,7 @@
 		        });
 		        
 		        testMarkers.addMarker(marker);
+		        
 		    }
 			
 			
@@ -660,15 +660,24 @@
 				transformedUshahidiData.data = nudata;
 				
 				var layer = new OpenLayers.Layer.OSM();
-				
+
 				//var heatmap = new OpenLayers.Layer.Heatmap( "Heatmap Layer", this._olMap, this._olMap, {visible: true, radius:10}, {isBaseLayer: false, opacity: 0.3, projection: Ushahidi.proj_4326});
-				var heatmap = new OpenLayers.Layer.Heatmap(options.name, this._olMap, this._olMap, options.hmapoptions, options.otheroptions);
-				this._olMap.addLayer(heatmap);
-				//this._olMap.addLayer([layer, heatmap]);
+				var heatmap = new OpenLayers.Layer.Heatmap(options.name, this._olMap, layer, options.hmapoptions, options.otheroptions);
+				
+				this._olMap.addLayers([layer, heatmap]);
+				
 				this._olMap.zoomToMaxExtent();
 				
 				heatmap.setDataSet(transformedUshahidiData);
-				//this._isLoaded = 1;
+				
+				this._selectControl = new OpenLayers.Control.SelectFeature(
+					this._olMap.getLayersByClass("OpenLayers.Layer.Heatmap"),
+					{ clickout: true, toggle: false, multiple: false, hover: false });
+			    this._olMap.addControl(this._selectControl);
+			    this._selectControl.activate();
+				
+				console.log(this._olMap);
+				this._isLoaded = 1;
 				return this;
 		}
 		
@@ -799,6 +808,7 @@
 			{
 				// Update SelectFeature control with all vector layers
 				this._selectControl.setLayer(this._olMap.getLayersByClass("OpenLayers.Layer.Vector"));
+				
 			}
 			else
 			{
@@ -809,6 +819,7 @@
 				);
 				this._olMap.addControl(this._selectControl);
 				this._selectControl.activate();
+				//console.log(this._olMap.getLayersByClass("OpenLayers.Layer.Heatmap", "OpenLayers.Layer.Vector"));
 			}
 			
 			// Bind popup events for select/unselect
