@@ -544,9 +544,9 @@
 		
 		// Heatmap layer
 		if(layerType == Ushahidi.HEATMAP){
-			//this.deleteLayer(Ushahidi.HEATMAP);
+			this.deleteLayer(Ushahidi.HEATMAP);
 			
-			if(options == undefined){
+			if (options == undefined) {
 				options = {};
 			}
 			
@@ -570,14 +570,22 @@
 		
 			transformedUshahidiData.data = nudata;
 			
-			//var heatmap = new OpenLayers.Layer.Heatmap( "Heatmap Layer", this._olMap, this._olMap, {visible: true, radius:10}, {isBaseLayer: false, opacity: 0.3, projection: Ushahidi.proj_4326});
-			var heatmap = new OpenLayers.Layer.Heatmap(options.name, this._olMap, this._olMap, options.hmapoptions, options.otheroptions);
+			var layer = new OpenLayers.Layer.OSM();
 			
-			this._olMap.addLayer(heatmap);
+			var heatmap = new OpenLayers.Layer.Heatmap(options.name, this._olMap, layer, options.hmapoptions, options.otheroptions);
+			
+			// Create a new heatmap layer
+			var heatmapLayer = new OpenLayers.Layer.Vector(options.name, heatmap);
+			
+			this._olMap.addLayers([heatmapLayer, layer]);
 			this._olMap.zoomToMaxExtent();
 			
 			heatmap.setDataSet(transformedUshahidiData);
 			
+			// Delete the old heatmap layer
+			this.deleteLayer(heatmap);
+			
+			this._isLoaded = 1;
 			return this;
 		}
 		
