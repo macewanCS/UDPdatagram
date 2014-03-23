@@ -58,7 +58,7 @@
 		
 		// Heat map Layer type
 		HEATMAP: "heatmap",
-		
+
 		/**
 		 * APIProperty: baseURL
 		 * Base URL for the application
@@ -160,7 +160,7 @@
 							}
 							else if (feature_count > 100)
 							{
-								return Ushahidi.markerRadius * 12;
+								return Ushahidi.markerRadius * 6;
 							}
 							else if (feature_count > 10)
 							{
@@ -488,12 +488,12 @@
 	 * keepOnTop - {bool} Whether to keep this layer above others.
 	 */
 	Ushahidi.Map.prototype.addLayer = function(layerType, options, save, keepOnTop) {
-		
 		// Default markers layer
 		if (layerType == Ushahidi.DEFAULT) {
 			this.deleteLayer("default");
 			
 			var markers = null;
+			
 			if (options == undefined) {
 				options = {};
 			}
@@ -505,20 +505,18 @@
 				markers = new OpenLayers.Layer.Vector("default", {
 					styleMap: styleMap
 				});
-				
+
 				// Add features to the vector layer
-				markers.addFeatures(new OpenLayers.Feature.Vector(this._olMap.getCenter()));
-				
-				
+				makers.addFeatures(new OpenLayers.Feature.Vector(this._olMap.getCenter()));
+
 			} else {
 				markers = new OpenLayers.Layer.Markers("default");
 				markers.addMarker(new OpenLayers.Marker(this._olMap.getCenter()));
-				
 			}
 
 			// Add the layer to the map
 			this._olMap.addLayer(markers);
-			
+
 			// Is map-click detection enabled?
 			if (options.detectMapClicks == undefined || options.detectMapClicks) {
 				var context = this;
@@ -543,95 +541,7 @@
 
 			return this;
 		}
-		//Test layer
-		if(layerType == Ushahidi.TESTMARKERS){
-						
-			var testMarkers = null;
-			testMarkers = new OpenLayers.Layer.Markers("Test Marker");
-				
-			//var lonlat = new OpenLayers.LonLat(100, 100);
-			//testMarkers.addMarker(new OpenLayers.Marker(lonlat));
-			
-			// Add the layer to the map
-			this._olMap.addLayer(testMarkers);
-			
-			// Create some random markers with random icons
-		    var icons = [
-		        "alligator.png",
-		        "chicken-2.png",
-		        "elephants.png",       
-		        "pets.png",
-		        "snakes.png",
-		        "wildlifecrossing.png",
-		        "animal-shelter-export.png",
-		        "cow-export.png",
-		        "frog-2.png",
-		        "pig.png",
-		        "spider.png",
-		        "zoo.png",
-		        "ant-export.png",
-		        "deer.png",
-		        "lobster-export.png",
-		        "rodent.png",
-		        "tiger-2.png",
-		        "bats.png",
-		        "dolphins.png",
-		        "monkey-export.png",
-		        "seals.png",
-		        "turtle-2.png",
-		        "birds-2.png",
-		        "duck-export.png",
-		        "mosquito.png",
-		        "shark-export.png",
-		        "veterinary.png",
-		        "butterfly-2.png",
-		        "eggs.png",
-		        "penguin-2.png",
-		        "snail.png",
-		        "whale-2.png"
-		    ];
-			
-			for(var i=0; i< 150; i++) {
-		        // Compute a random icon and lon/lat position.
-		        var icon = Math.floor(Math.random() * icons.length);
-		        var px = Math.random() * 360 - 180;
-		        var py = Math.random() * 170 - 85;
-		    
-		        // Create size, pixel and icon instances
-		        var size = new OpenLayers.Size(32, 37);
-		        var offset = new OpenLayers.Pixel(-(size.w/2), -size.h);
-		        var iconz = new OpenLayers.Icon("http://localhost/UDPdatagram/media/icons/"+icons[icon], size, offset);
-		        iconz.setOpacity(0.7);
-		        
-		        // Create a lonlat instance and transform it to the map projection.
-		        var lonlat = new OpenLayers.LonLat(px, py);
-		        lonlat.transform(new OpenLayers.Projection("EPSG:4326"), new OpenLayers.Projection("EPSG:900913"));
-		        
-		        // Add the marker
-		        var marker = new OpenLayers.Marker(lonlat, iconz);
-		        
-		        // Event to handler when the mouse is over
-		        // Inflate the icon and change its opacity
-		        marker.events.register("mouseover", marker, function() {
-		            this.inflate(1.2);
-		            this.setOpacity(1);
-		        });
-		        // Event to handler when the mouse is out
-		        // Inflate the icon and change its opacity
-		        marker.events.register("mouseout", marker, function() {
-		            this.inflate(1/1.2);
-		            this.setOpacity(0.7);
-		        });
-		        
-		        testMarkers.addMarker(marker);
-		        
-		    }
-			
-			
-			this._isLoaded = 1;
-			return this;
-		}
-						
+		
 		// Heatmap layer
 		if(layerType == Ushahidi.HEATMAP){
 			this.deleteLayer(Ushahidi.HEATMAP);
@@ -806,7 +716,6 @@
 			{
 				// Update SelectFeature control with all vector layers
 				this._selectControl.setLayer(this._olMap.getLayersByClass("OpenLayers.Layer.Vector"));
-				
 			}
 			else
 			{
@@ -817,7 +726,6 @@
 				);
 				this._olMap.addControl(this._selectControl);
 				this._selectControl.activate();
-				//console.log(this._olMap.getLayersByClass("OpenLayers.Layer.Heatmap", "OpenLayers.Layer.Vector"));
 			}
 			
 			// Bind popup events for select/unselect
