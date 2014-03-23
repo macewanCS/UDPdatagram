@@ -58,10 +58,7 @@
 		
 		// Heat map Layer type
 		HEATMAP: "heatmap",
-
-		HEATMAP: "heatmap",
 		
-		TESTMARKERS: "testMarkers",
 		/**
 		 * APIProperty: baseURL
 		 * Base URL for the application
@@ -634,56 +631,7 @@
 			this._isLoaded = 1;
 			return this;
 		}
-		
-			if(layerType == Ushahidi.HEATMAP){
-				//this.deleteLayer(Ushahidi.HEATMAP);
-				
-				if(options == undefined){
-					options = {};
-				}
-				
-				// Makes the heatmap
-				var ushahidiData={
-					max: 2,
-					data: Ushahidi.heatmapData
-				};
-				
-				var transformedUshahidiData = { max: ushahidiData.max , data: [] },
-				data = ushahidiData.data,
-				datalen = data.length,
-				nudata = [];
-				
-				while(datalen--){
-					nudata.push({
-					lonlat: new OpenLayers.LonLat(data[datalen].lon, data[datalen].lat),
-					count: data[datalen].count
-					});
-				}
-				
-				transformedUshahidiData.data = nudata;
-				
-				var layer = new OpenLayers.Layer.OSM();
-
-				//var heatmap = new OpenLayers.Layer.Heatmap( "Heatmap Layer", this._olMap, this._olMap, {visible: true, radius:10}, {isBaseLayer: false, opacity: 0.3, projection: Ushahidi.proj_4326});
-				var heatmap = new OpenLayers.Layer.Heatmap(options.name, this._olMap, layer, options.hmapoptions, options.otheroptions);
-				
-				this._olMap.addLayers([layer, heatmap]);
-				
-				this._olMap.zoomToMaxExtent();
-				
-				heatmap.setDataSet(transformedUshahidiData);
-				
-				this._selectControl = new OpenLayers.Control.SelectFeature(
-					this._olMap.getLayersByClass("OpenLayers.Layer.Heatmap"),
-					{ clickout: true, toggle: false, multiple: false, hover: false });
-			    this._olMap.addControl(this._selectControl);
-			    this._selectControl.activate();
-				
-				console.log(this._olMap);
-				this._isLoaded = 1;
-				return this;
-		}
-		
+						
 		// Heatmap layer
 		if(layerType == Ushahidi.HEATMAP){
 			this.deleteLayer(Ushahidi.HEATMAP);
