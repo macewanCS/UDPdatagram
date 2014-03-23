@@ -1,4 +1,4 @@
-<?php
+ <?php
 /**
  * Main cluster js file.
  * 
@@ -205,7 +205,6 @@ jQuery(function() {
 
 	};
 	
-			
 	// Initialize the map
 	map = new Ushahidi.Map('map', config);
 	
@@ -217,12 +216,8 @@ jQuery(function() {
 		name: "<?php echo Kohana::lang('ui_main.reports'); ?>",
 		url: reportsURL,
 		transform: false
-	}, true, true);
-	
-	map.addLayer(Ushahidi.TESTMARKERS, {
-		transform: false
-	}, true, true);
-	
+	}, true, true);	
+
 	//Heatmap layer
 	map.addLayer(Ushahidi.HEATMAP, {
 		name: "HEAT MAP",

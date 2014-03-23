@@ -114,7 +114,6 @@ class Themes_Core {
 			
 			Requirements::js("media/js/OpenLayers.js");
 			Requirements::js("media/js/ushahidi.js");
-			//Javascript requirements for heatmap 
 			Requirements::js("media/js/heatmap.js");
 			Requirements::js("media/js/heatmap-openlayers.js");
 			if ($this->api_url)

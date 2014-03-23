@@ -55,14 +55,14 @@ class Main_Controller extends Template_Controller {
 	protected $themes;
 	
 	/**
-	* Stores the heatmap data into heatmap_data as an array
-	*/
+	 * Stores the heatmap data into heatmap_data as an array
+	 */
 	public $heatmap_data;
 
 	public function __construct()
 	{
 		parent::__construct();
-		
+
 		//create heatmap instance
 		$this->heatmap_data = $this->_data();
 		
@@ -433,11 +433,12 @@ class Main_Controller extends Template_Controller {
 		$marker_opacity = Kohana::config('map.marker_opacity');
 		$marker_stroke_width = Kohana::config('map.marker_stroke_width');
 		$marker_stroke_opacity = Kohana::config('map.marker_stroke_opacity');
+		//$heatmap_data = $this->getHeatMapData();
 
 		$this->themes->js = new View('main/main_js');
 		
 		$this->themes->js->heatmap_data = $this->_data();
-		
+
 		$this->themes->js->marker_radius = ($marker_radius >=1 AND $marker_radius <= 10 )
 		    ? $marker_radius
 		    : 5;
@@ -479,7 +480,7 @@ class Main_Controller extends Template_Controller {
 	 * 
 	 * @return array $data
 	 */
-	private function _data()
+	public function _data()
 	{
 		$data = array();
 		$markers = reports::fetch_incidents();
@@ -503,7 +504,6 @@ class Main_Controller extends Template_Controller {
 					break 1;
 				}
 			}
-
 			if ( ! $skip)
 			{
 				$data[] = array(

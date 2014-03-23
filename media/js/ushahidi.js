@@ -55,6 +55,9 @@
 		KML: "KML",
 
 		DEFAULT: "default",
+		
+		// Heat map Layer type
+		HEATMAP: "heatmap",
 
 		HEATMAP: "heatmap",
 		
@@ -679,6 +682,53 @@
 				console.log(this._olMap);
 				this._isLoaded = 1;
 				return this;
+		}
+		
+		// Heatmap layer
+		if(layerType == Ushahidi.HEATMAP){
+			this.deleteLayer(Ushahidi.HEATMAP);
+			
+			if (options == undefined) {
+				options = {};
+			}
+			
+			// Makes the heatmap
+			var ushahidiData={
+							max: 2,
+							data: Ushahidi.heatmapData
+						};
+			
+			var transformedUshahidiData = { max: ushahidiData.max , data: [] },
+				data = ushahidiData.data,
+				datalen = data.length,
+				nudata = [];
+		
+			while(datalen--){
+				nudata.push({
+					lonlat: new OpenLayers.LonLat(data[datalen].lon, data[datalen].lat),
+					count: data[datalen].count
+				});
+			}
+		
+			transformedUshahidiData.data = nudata;
+			
+			var layer = new OpenLayers.Layer.OSM();
+			
+			var heatmap = new OpenLayers.Layer.Heatmap(options.name, this._olMap, layer, options.hmapoptions, options.otheroptions);
+			
+			// Create a new heatmap layer
+			var heatmapLayer = new OpenLayers.Layer.Vector(options.name, heatmap);
+			
+			this._olMap.addLayers([heatmapLayer, layer]);
+			this._olMap.zoomToMaxExtent();
+			
+			heatmap.setDataSet(transformedUshahidiData);
+			
+			// Delete the old heatmap layer
+			this.deleteLayer(heatmap);
+			
+			this._isLoaded = 1;
+			return this;
 		}
 		
 		// Setup default protocol format
