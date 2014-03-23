@@ -63,6 +63,7 @@ class Main_Controller extends Template_Controller {
 	{
 		parent::__construct();
 
+		//create heatmap instance
 		$this->heatmap_data = $this->_data();
 		
 		// Load Session
@@ -503,7 +504,6 @@ class Main_Controller extends Template_Controller {
 					break 1;
 				}
 			}
-
 			if ( ! $skip)
 			{
 				$data[] = array(
@@ -516,5 +516,4 @@ class Main_Controller extends Template_Controller {
 
 		return json_encode($data);
 	}
-
 } // End Main

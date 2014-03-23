@@ -111,6 +111,7 @@ class Themes_Core {
 
 		if ($this->map_enabled)
 		{
+			
 			Requirements::js("media/js/OpenLayers.js");
 			Requirements::js("media/js/ushahidi.js");
 			Requirements::js("media/js/heatmap.js");

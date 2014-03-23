@@ -162,7 +162,7 @@ jQuery(function() {
 	// Render thee JavaScript for the base layers so that
 	// they are accessible by Ushahidi.js
 	<?php echo map::layers_js(FALSE); ?>
-	
+
 	// Map configuration
 	var config = {
 
@@ -207,18 +207,24 @@ jQuery(function() {
 	
 	// Initialize the map
 	map = new Ushahidi.Map('map', config);
+	
+	map.addLayer(Ushahidi.DEFAULT, {
+		transform: false
+	}, true, true);
+	
 	map.addLayer(Ushahidi.GEOJSON, {
 		name: "<?php echo Kohana::lang('ui_main.reports'); ?>",
 		url: reportsURL,
 		transform: false
-	}, true, true);
-	
+	}, true, true);	
+
+	//Heatmap layer
 	map.addLayer(Ushahidi.HEATMAP, {
-		name: "heat map",
+		name: "HEAT MAP",
 		hmapoptions: {visible: true, radius: 10},
 		otheroptions: {isBaseLayer: false, opacity: 0.3, projection: Ushahidi.proj_4326}
 	}, true, true);
-	
+				
 	// Register the referesh timeline function as a callback
 	map.register("filterschanged", refreshTimeline);
 	setTimeout(function() { refreshTimeline({
