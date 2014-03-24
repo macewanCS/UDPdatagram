@@ -213,8 +213,9 @@ jQuery(function() {
 		transform: false
 	}, true, true);
 	
+	// Add the heatmap layer onto the map
 	map.addLayer(Ushahidi.HEATMAP, {
-		name: "heat map",
+		name: Ushahidi.HEATMAP,
 		hmapoptions: {visible: true, radius: 10},
 		otheroptions: {isBaseLayer: false, opacity: 0.3, projection: Ushahidi.proj_4326}
 	}, true, true);
