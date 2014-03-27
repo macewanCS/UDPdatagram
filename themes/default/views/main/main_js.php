@@ -158,7 +158,7 @@ function refreshTimeline(options) {
 
 jQuery(function() {
 	var reportsURL = "<?php echo Kohana::config('settings.allow_clustering') == 1 ? "json/cluster" : "json"; ?>";
-
+	var allowHeatmap = "<?php echo Kohana::config('settings.allow_heatmap') == 1 ? true : false; ?>";
 	// Render thee JavaScript for the base layers so that
 	// they are accessible by Ushahidi.js
 	<?php echo map::layers_js(FALSE); ?>
@@ -207,31 +207,32 @@ jQuery(function() {
 	
 	// Initialize the map
 	map = new Ushahidi.Map('map', config);
-	
+	/*
 	map.addLayer(Ushahidi.DEFAULT, {
 		transform: false
 	}, true, true);
-	
+	*/
 	map.addLayer(Ushahidi.GEOJSON, {
 		name: "<?php echo Kohana::lang('ui_main.reports'); ?>",
 		url: reportsURL,
 		transform: false
 	}, true, true);	
 
-	//Heatmap layer
-	map.addLayer(Ushahidi.HEATMAP, {
-		name: "HEAT MAP",
-		hmapoptions: {visible: true, radius: 10},
-		otheroptions: {isBaseLayer: false, opacity: 0.3, projection: Ushahidi.proj_4326}
-	}, true, true);
-				
+	if(allowHeatmap == true)
+	{
+		//Heatmap layer
+		map.addLayer(Ushahidi.HEATMAP, {
+			name: "HEAT MAP",
+			hmapoptions: {visible: true, radius: 10},
+			otheroptions: {isBaseLayer: false, opacity: 0.3, projection: Ushahidi.proj_4326}
+		}, true, true);
+	}
 	// Register the referesh timeline function as a callback
 	map.register("filterschanged", refreshTimeline);
 	setTimeout(function() { refreshTimeline({
 		s: startTime,
 		e: endTime
 	}); }, 800);
-
 
 	// Category Switch Action
 	$("ul#category_switch li > a").click(function(e) {
