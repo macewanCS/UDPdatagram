@@ -55,6 +55,9 @@
 		KML: "KML",
 
 		DEFAULT: "default",
+		
+		// Heat map Layer type
+		HEATMAP: "heatmap",
 
 		/**
 		 * APIProperty: baseURL
@@ -251,7 +254,7 @@
 						if (typeof(feature.attributes.opacity) != 'undefined' && 
 							feature.attributes.opacity != '')
 						{
-							return feature.attributes.opacity
+							return feature.attributes.opacity;
 						}
 						else if (feature_icon!=="")
 						{
@@ -573,7 +576,7 @@
 				feature.geometry.x = point.x;
 				feature.geometry.y = point.y;
 			}
-		}
+		};
 
 		// Layer options
 		var layerOptions = {
@@ -640,18 +643,58 @@
 				format: protocolFormat
 			});
 		}
-
-		// Create the layer
-		var layer = new OpenLayers.Layer.Vector(options.name, layerOptions);
 		
 		// Store context for callbacks
 		var context = this;
 		
-		// Hide the layer until its loaded
-		// only delete the old layer on loadend
-		layer.display(false);
-		// Hack to start with opacity 0 then fade in
-		layer.div.style['opacity'] = 0;
+		// Heatmap layer
+		if(layerType == Ushahidi.HEATMAP){
+			this.deleteLayer(Ushahidi.HEATMAP);
+			
+			if (options == undefined) {
+				options = {};
+			}
+			
+			// Makes the heatmap
+			var ushahidiData={
+							max: 2,
+							data: Ushahidi.heatmapData
+						};
+			
+			var transformedUshahidiData = { max: ushahidiData.max , data: [] },
+				data = ushahidiData.data,
+				datalen = data.length,
+				nudata = [];
+		
+			while(datalen--){
+				nudata.push({
+					lonlat: new OpenLayers.LonLat(data[datalen].lon, data[datalen].lat),
+					count: data[datalen].count
+				});
+			}
+		
+			transformedUshahidiData.data = nudata;
+			
+			var heatmapLayer = new OpenLayers.Layer.Heatmap(options.name, this._olMap, this._olMap.layers[0], options.hmapoptions, options.otheroptions);
+			
+			// Create a new heatmap layer
+			var layer = new OpenLayers.Layer.Vector(options.name, heatmapLayer);
+			
+			this._olMap.addLayer(layer);
+			
+			layer.setDataSet(transformedUshahidiData);
+			
+		}else{
+			// Create the layer
+			var layer = new OpenLayers.Layer.Vector(options.name, layerOptions);
+			
+			// Hide the layer until its loaded
+			// only delete the old layer on loadend
+			layer.display(false);
+			// Hack to start with opacity 0 then fade in
+			layer.div.style['opacity'] = 0;
+		}
+		
 		var oldLayer = this._olMap.getLayersByName(options.name);
 		var displayLayer = function () {
 			// Delete the old layers
@@ -684,7 +727,7 @@
 				"featureunselected": this.onFeatureUnselect,
 				scope: this
 			});
-		}
+		};
 		// Register display layer fn to run on load end
 		layer.events.register('loadend', this, displayLayer);
 		
@@ -703,7 +746,7 @@
 		this._isLoaded = 1;
 
 		return this;
-	}
+	};
 
 	/**
 	 * APIMethod: updateReportFilters

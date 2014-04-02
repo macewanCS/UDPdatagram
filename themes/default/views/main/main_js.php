@@ -1,4 +1,4 @@
-<?php
+ <?php
 /**
  * Main cluster js file.
  * 
@@ -22,6 +22,9 @@ Ushahidi.markerRadius = <?php echo $marker_radius; ?>;
 Ushahidi.markerOpacity = <?php echo $marker_opacity; ?>;
 Ushahidi.markerStokeWidth = <?php echo $marker_stroke_width; ?>;
 Ushahidi.markerStrokeOpacity = <?php echo $marker_stroke_opacity; ?>;
+// Initialize heat map namespace
+Ushahidi.heatmapData = <?php echo $heatmap_data ?>;
+
 
 // Default to most active month
 var startTime = <?php echo $active_startDate ?>;
@@ -202,7 +205,7 @@ jQuery(function() {
 		}
 
 	};
-
+	
 	// Initialize the map
 	map = new Ushahidi.Map('map', config);
 	map.addLayer(Ushahidi.GEOJSON, {
@@ -211,6 +214,12 @@ jQuery(function() {
 		transform: false
 	}, true, true);
 
+	map.addLayer(Ushahidi.HEATMAP, {
+		name: Ushahidi.HEATMAP,
+		hmapoptions: {visible: true, radius: 10},
+		otheroptions: {isBaseLayer: false, opacity: 0.3, projection: Ushahidi.proj_4326}
+	}, true, true);
+	
 
 	// Register the referesh timeline function as a callback
 	map.register("filterschanged", refreshTimeline);
