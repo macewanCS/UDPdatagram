@@ -153,6 +153,49 @@ function refreshTimeline(options) {
 	<?php }?>
 }
 
+/**
+ * Callback function for rendering the heatmap layer.
+ * This function has been taken from David Kobia's
+ * heatmap plugin and has been modified to javascript
+ */
+function refreshHeatmap(url, callback) {
+	var heatmapData = [];
+	
+	// Get the JSON file from the URL
+	$.getJSON(url, function(jsonData) {
+		
+		// Reads through the JSON and stores the latitude, longitude, and count
+		jsonData.features.forEach(function(childData){
+			
+			// Add the data when it is empty
+			if(heatmapData.length == 0) {
+				heatmapData.push({
+					lon: Math.round((childData.geometry.coordinates[0] * 1000))/1000,
+					lat: Math.round((childData.geometry.coordinates[1] * 1000))/1000,
+					count: 1
+				});
+			} else {
+				// Increase the count if latitude and longitude is equal
+				for(var j = 0; j < heatmapData.length; j++){
+					if(Math.round((childData.geometry.coordinates[0] * 1000))/1000 == heatmapData[j].lon &&
+					   Math.round((childData.geometry.coordinates[1] * 1000))/1000 == heatmapData[j].lat){
+					   	heatmapData[j].count += 1;
+					   	return;
+					}
+				}
+				
+				// Add the data if the coordinates does not match
+				heatmapData.push({
+					lon: Math.round((childData.geometry.coordinates[0] * 1000))/1000,
+					lat: Math.round((childData.geometry.coordinates[1] * 1000))/1000,
+					count: 1
+				});
+			}
+		});
+		// Returns back the heatmap data
+		callback(heatmapData);
+	});
+}
 
 jQuery(function() {
 	var reportsURL = "<?php echo Kohana::config('settings.allow_clustering') == 1 ? "json/cluster" : "json"; ?>";
@@ -220,7 +263,12 @@ jQuery(function() {
 =======
 	
 	map.addLayer(Ushahidi.HEATMAP, {
+<<<<<<< HEAD
 		name: "heat map",
+=======
+		name: Ushahidi.HEATMAP,
+		url: "json",
+>>>>>>> 2d479d9... Heatmap is able to transform to any specific category
 		hmapoptions: {visible: true, radius: 10},
 		otheroptions: {isBaseLayer: false, opacity: 0.3, projection: Ushahidi.proj_4326}
 	}, true, true);
@@ -233,10 +281,8 @@ jQuery(function() {
 		e: endTime
 	}); }, 800);
 
-
 	// Category Switch Action
 	$("ul#category_switch li > a").click(function(e) {
-		
 		var categoryId = this.id.substring(4);
 		var catSet = 'cat_' + this.id.substring(4);
 
@@ -255,7 +301,7 @@ jQuery(function() {
 		
 		// Update report filters
 		map.updateReportFilters({c: categoryId});
-
+		
 		e.stopPropagation();
 		return false;
 	});

@@ -48,6 +48,12 @@
 	 	 * APIProperty: markerStrokeOpacity
 	 	 */
 	 	markerStrokeOpacity: 0.9,
+	 	
+	 	/**
+	 	 * Identify the current category to
+	 	 * check if the heatmap needs to be redrawn
+	 	 */
+	 	currentCategory: -1,
 
 		// Layer types
 		GEOJSON: "GeoJSON",
@@ -542,6 +548,7 @@
 			return this;
 		}
 		
+<<<<<<< HEAD
 		// Heatmap layer
 		if(layerType == Ushahidi.HEATMAP){
 			//this.deleteLayer(Ushahidi.HEATMAP);
@@ -581,6 +588,8 @@
 			return this;
 		}
 		
+=======
+>>>>>>> 2d479d9... Heatmap is able to transform to any specific category
 		// Setup default protocol format
 		var protocolFormat = new OpenLayers.Format.GeoJSON();
 		// Switch protocol format if layer is KML
@@ -645,6 +654,7 @@
 			if (fetchURL.indexOf("?") !== -1) {
 				var index = fetchURL.indexOf("?");
 				var args = fetchURL.substr(index+1, fetchURL.length).split("&");
+				
 				fetchURL = fetchURL.substring(0, index);
 
 				for (var i=0; i<args.length; i++) {
@@ -682,12 +692,83 @@
 				format: protocolFormat
 			});
 		}
+		
+		// Heatmap layer
+		if (layerType == Ushahidi.HEATMAP) {
+			
+			if (options === undefined) {
+				options = {};
+			}
+			
+			// Store current for callbacks
+			var current = this;
+			
+			// Regular expression to check for category in the fetchURL
+			var categoryIDRegex = /c=[0-9]+/;
+			// Search if the category regular expression is in fetchURL
+			var match = fetchURL.search(categoryIDRegex);
+			// Set the categoryID to be the number specified after "c=" once matched, otherwise,
+			// set to the default category number 0
+			var categoryID = (match != -1) ? fetchURL.substr(match+2, match.length) : 0;
 
-		// Create the layer
+			// Refresh the heatmap layer if a new category has been clicked
+			if (categoryID != Ushahidi.currentCategory) {
+				// Delete the old layers
+				this.deleteLayer(Ushahidi.HEATMAP);
+				
+				// Calls on callback function to refresh the heatmap layer.
+				// Parts of the code is from David Kobia's heatmap plugin
+	            refreshHeatmap(fetchURL, function(heatmapData){
+	                // Stores the data
+	                var ushahidiData = {
+	                                max: 2,
+	                                data: heatmapData
+	                };
+	               	
+	               	// Transform the data
+	                var transformedUshahidiData = { max: ushahidiData.max , data: [] },
+	                    data = ushahidiData.data,
+	                    datalen = data.length,
+	                    nudata = [];
+	           
+	                while(datalen--) {
+	                    nudata.push({
+	                        lonlat: new OpenLayers.LonLat(data[datalen].lon, data[datalen].lat),
+	                        count: data[datalen].count
+	                    });
+	                }
+	           
+	                transformedUshahidiData.data = nudata;
+	               
+	               // Create the heatmap layer
+	                var heatmap = new OpenLayers.Layer.Heatmap(options.name, current._olMap, current._olMap.layers[0], options.hmapoptions, options.otheroptions);
+	               
+	              	// Set and update the new transformed heatmap layer
+	                heatmap.setDataSet(transformedUshahidiData);
+	                heatmap.updateLayer();
+	               
+	                // Stores the heatmap layer into the vector
+	                var layer = new OpenLayers.Layer.Vector(options.name, heatmap);
+	               
+					// Add the layer to the map
+					// We do this after a delay in case someone zooms multiple times
+	                clearTimeout(current._addLayerTimeouts[options.name]);
+	                current._addLayerTimeouts[options.name] = setTimeout(function(){ current._olMap.addLayer(layer); }, 100);
+	               
+	                current._isLoaded = 1;
+	                return current;
+	            });
+	            // Changes the current category to the new category clicked
+            	Ushahidi.currentCategory = categoryID;
+	            return;
+    		}
+    		return;
+		}
+		
 		var layer = new OpenLayers.Layer.Vector(options.name, layerOptions);
 		
 		// Store context for callbacks
-		var context = this;
+        var context = this;
 		
 		// Hide the layer until its loaded
 		// only delete the old layer on loadend
@@ -727,6 +808,7 @@
 				scope: this
 			});
 		};
+
 		// Register display layer fn to run on load end
 		layer.events.register('loadend', this, displayLayer);
 		
@@ -736,7 +818,7 @@
 			layer.addFeatures(options.features);
 			layer.events.register('added', this, displayLayer);
 		}
-
+		
 		// Add the layer to the map
 		// We do this after a delay in case someone zooms multiple times
 		clearTimeout(this._addLayerTimeouts[options.name]);
@@ -768,7 +850,7 @@
 
 		var hasChanged = false;
 		var context = this;
-
+		
 		// Overwrite the current set of filters with the new values
 		$.each(filters, function(filter, value) {
 			var currentValue = context._reportFilters[filter];
@@ -778,7 +860,7 @@
 				context._reportFilters[filter] = value;
 			}
 		});
-
+		
 		// Have the filters changed
 		if (hasChanged) {
 			context.redraw();
@@ -787,7 +869,7 @@
 				context.trigger("filterschanged", context._reportFilters);
 			}, 800);
 		}
-	}
+	};
 
 	/**
 	 * APIMethod: getReportFilters
@@ -795,7 +877,7 @@
 	 */
 	Ushahidi.Map.prototype.getReportFilters = function() {
 		return this._reportFilters;
-	}
+	};
 
 	/**
 	 * APIMethod: refresh
@@ -810,7 +892,7 @@
 			this.redraw();
 		}
 		return this;
-	}
+	};
 
 	/**
 	 * APIMethod: redraw
@@ -828,7 +910,7 @@
 			this.addLayer(layer.layerType, layer.options);
 		}
 		return this;
-	}
+	};
 
 	/**
 	 * APIMethod: onFeatureSelect
@@ -905,7 +987,7 @@
 		$("#zoomOut", popup.contentDiv).click(
 			{context: this, latitude: lat, longitude: lon, zoomFactor: -1}, 
 			this.zoomToSelectedFeature);
-	}
+	};
 
 	/**
 	 * APIMethod: onFeatureUnselect
@@ -918,7 +1000,7 @@
 			e.feature.popup.destroy();
 			e.feature.popup = null;
 		}
-	}
+	};
 
 	/**
 	 * APIMethod: onPopupClose
@@ -927,7 +1009,7 @@
 	 */
 	Ushahidi.Map.prototype.onPopupClose = function(e) {
 		Ushahidi._currentMap.closePopups();
-	}
+	};
 
 	/**
 	 * APIMethod: closePopups
@@ -939,7 +1021,7 @@
 			this._selectControl.unselect(this._selectedFeature);
 			this._selectedFeature = null;
 		}
-	}
+	};
 
 	/**
 	 * APIMethod: zoomToSelectedFeature
@@ -961,7 +1043,7 @@
 
 		// Halt further event processing
 		return false;
-	}
+	};
 
 	/**
 	 * APIMethod: register
@@ -990,7 +1072,7 @@
 			callback: callback,
 			context: context
 		});
-	}
+	};
 
 	/**
 	 * APIMethod: trigger
@@ -1018,7 +1100,7 @@
 				subscriber.callback.call(subscriber.context, data);
 			}
 		}
-	}
+	};
 
 	/**
 	 * APIMethod: resize
@@ -1027,7 +1109,7 @@
 	Ushahidi.Map.prototype.resize = function() {
 		this._olMap.updateSize();
 		this._olMap.pan(0, 1);
-	}
+	};
 
 	/**
 	 * APIMethod: deleteLayer
@@ -1052,7 +1134,7 @@
 			if (layers[i].destroyFeatures !== undefined)
 				layers[i].destroyFeatures();
 		}
-	}
+	};
 
 	/**
 	 * APIMethod: createRadiusLayer
@@ -1082,7 +1164,7 @@
 			context.trigger("markerpositionchanged", coords);
 		});
 		
-	}
+	};
 
 	/**
 	 * APIMethod: updateRadius
@@ -1144,7 +1226,7 @@
 
 		this._olMap.addLayers([radiusLayer, markers]);
 
-	}
+	};
 
 	/**
 	 * APIMethod: updateBaseLayer
@@ -1159,7 +1241,7 @@
 
 		layers[0].setVisibility(true);
 		this._olMap.setBaseLayer(layers[0]);
-	}
+	};
 
 	/**
 	 * APIMethod: updateZoom
@@ -1172,7 +1254,7 @@
 			this.currentZoom = zoom;
 			this._olMap.setCenter(this._currentCenter, zoom);
 		}
-	}
+	};
 
 	/**
 	 * APIMethod: updateMapCenter
@@ -1188,7 +1270,7 @@
 
 		// Map center has changed, trigger 
 		this.trigger("markerpositionchanged", center);
-	}
+	};
 
 	/**
 	 * APIMethod: triggerZoomChanged
@@ -1207,7 +1289,7 @@
 			// when we're using the default layer
 			this.addLayer(Ushahidi.DEFAULT);
 		}
-	}
+	};
 	
 	/**
 	 * APIMethod: keepOnTop
@@ -1222,7 +1304,7 @@
 				this._olMap.raiseLayer(layers[j], this._olMap.getNumLayers());
 			}
 		}
-	}
+	};
 
 
 	/**
@@ -1230,6 +1312,6 @@
 	 * Converts LongLat coordinates from Open Layers to "lat, long"
 	 */
 	Ushahidi.convertLongLat = function(longLat) {
-		return longLat.lat.toFixed(5) + ", " + longLat.lon.toFixed(5)
-	}
+		return longLat.lat.toFixed(5) + ", " + longLat.lon.toFixed(5);
+	};
 })();

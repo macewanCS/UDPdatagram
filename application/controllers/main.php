@@ -57,7 +57,11 @@ class Main_Controller extends Template_Controller {
 	public function __construct()
 	{
 		parent::__construct();
+<<<<<<< HEAD
 
+=======
+		
+>>>>>>> 2d479d9... Heatmap is able to transform to any specific category
 		// Load Session
 		$this->session = Session::instance();
 
