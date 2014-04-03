@@ -53,17 +53,10 @@ class Main_Controller extends Template_Controller {
 	 * @var Themes
 	 */
 	protected $themes;
-	
-	/**
-	 * Stores the heatmap data into heatmap_data as an array
-	 */
-	public $heatmap_data;
 
 	public function __construct()
 	{
 		parent::__construct();
-
-		$this->heatmap_data = $this->_data();
 		
 		// Load Session
 		$this->session = Session::instance();
@@ -432,11 +425,8 @@ class Main_Controller extends Template_Controller {
 		$marker_opacity = Kohana::config('map.marker_opacity');
 		$marker_stroke_width = Kohana::config('map.marker_stroke_width');
 		$marker_stroke_opacity = Kohana::config('map.marker_stroke_opacity');
-		//$heatmap_data = $this->getHeatMapData();
 
 		$this->themes->js = new View('main/main_js');
-		
-		$this->themes->js->heatmap_data = $this->_data();
 
 		$this->themes->js->marker_radius = ($marker_radius >=1 AND $marker_radius <= 10 )
 		    ? $marker_radius
@@ -472,49 +462,6 @@ class Main_Controller extends Template_Controller {
 		$this->themes->plugin_requirements();
 		$this->template->header->header_block = $this->themes->header_block();
 		$this->template->footer->footer_block = $this->themes->footer_block();
-	}
-	
-	/**
-	 * Generate Clustered Data
-	 * 
-	 * @return array $data
-	 */
-	public function _data()
-	{
-		$data = array();
-		$markers = reports::fetch_incidents();
-		
-		foreach ($markers as $marker)
-		{
-			$skip = FALSE;
-			// To generate a good heatmap we need to combine lat/lons
-			// at 3 decimal place values
-			$marker->latitude = round($marker->latitude, 3);
-			$marker->longitude = round($marker->longitude, 3);
-
-			// Find item with similar lat/lon?
-			foreach ($data as $key => $value)
-			{
-				if ($data[$key]['lat'] == $marker->latitude 
-					AND $data[$key]['lon'] == $marker->longitude)
-				{
-					$data[$key]['count'] = $data[$key]['count'] + 1;
-					$skip = TRUE;
-					break 1;
-				}
-			}
-
-			if ( ! $skip)
-			{
-				$data[] = array(
-					'lat' => round($marker->latitude, 3),
-					'lon' => round($marker->longitude, 3),
-					'count' => 1
-					);
-			}
-		}
-
-		return json_encode($data);
 	}
 
 } // End Main
