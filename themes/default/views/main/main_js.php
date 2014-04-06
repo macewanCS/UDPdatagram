@@ -200,6 +200,8 @@ function refreshHeatmap(url, callback) {
 jQuery(function() {
 	var reportsURL = "<?php echo Kohana::config('settings.allow_clustering') == 1 ? "json/cluster" : "json"; ?>";
 
+	var allowHeatmap = "<?php echo Kohana::config('settings.allow_heatmap') == 1 ? true : false; ?>";
+	
 	// Render thee JavaScript for the base layers so that
 	// they are accessible by Ushahidi.js
 	<?php echo map::layers_js(FALSE); ?>
@@ -254,13 +256,16 @@ jQuery(function() {
 		transform: false
 	}, true, true);
 	
-	// Add the heatmap layer onto the map
-	map.addLayer(Ushahidi.HEATMAP, {
-		name: Ushahidi.HEATMAP,
-		url: "json",
-		hmapoptions: {visible: true, radius: 10},
-		otheroptions: {isBaseLayer: false, opacity: 0.3, projection: Ushahidi.proj_4326}
-	}, true, true);
+	if(allowHeatmap == true)
+	{
+		// Add the heatmap layer onto the map
+		map.addLayer(Ushahidi.HEATMAP, {
+			name: Ushahidi.HEATMAP,
+			url: "json",
+			hmapoptions: {visible: true, radius: 10},
+			otheroptions: {isBaseLayer: false, opacity: 0.3, projection: Ushahidi.proj_4326}
+		}, true, true);
+	}
 	
 	// Register the referesh timeline function as a callback
 	map.register("filterschanged", refreshTimeline);
