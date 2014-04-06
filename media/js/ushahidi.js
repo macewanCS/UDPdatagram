@@ -547,49 +547,7 @@
 
 			return this;
 		}
-		
-<<<<<<< HEAD
-		// Heatmap layer
-		if(layerType == Ushahidi.HEATMAP){
-			//this.deleteLayer(Ushahidi.HEATMAP);
-			
-			if(options == undefined){
-				options = {};
-			}
-			
-			// Makes the heatmap
-			var ushahidiData={
-							max: 2,
-							data: Ushahidi.heatmapData
-						};
-			
-			var transformedUshahidiData = { max: ushahidiData.max , data: [] },
-				data = ushahidiData.data,
-				datalen = data.length,
-				nudata = [];
-		
-			while(datalen--){
-				nudata.push({
-					lonlat: new OpenLayers.LonLat(data[datalen].lon, data[datalen].lat),
-					count: data[datalen].count
-				});
-			}
-		
-			transformedUshahidiData.data = nudata;
-			
-			//var heatmap = new OpenLayers.Layer.Heatmap( "Heatmap Layer", this._olMap, this._olMap, {visible: true, radius:10}, {isBaseLayer: false, opacity: 0.3, projection: Ushahidi.proj_4326});
-			var heatmap = new OpenLayers.Layer.Heatmap(options.name, this._olMap, this._olMap, options.hmapoptions, options.otheroptions);
-			
-			this._olMap.addLayer(heatmap);
-			this._olMap.zoomToMaxExtent();
-			
-			heatmap.setDataSet(transformedUshahidiData);
-			
-			return this;
-		}
-		
-=======
->>>>>>> 2d479d9... Heatmap is able to transform to any specific category
+
 		// Setup default protocol format
 		var protocolFormat = new OpenLayers.Format.GeoJSON();
 		// Switch protocol format if layer is KML

@@ -138,6 +138,20 @@
 									}?>> <?php echo Kohana::lang('ui_main.no');?> 
 								</div>
 								
+								<h4><a href="#" class="tooltip" title="<?php echo Kohana::lang("tooltips.settings_allow_heatmap"); ?>"><?php echo Kohana::lang('settings.site.allow_heatmap');?></a></h4>
+									<div class="c_push">
+									<input type="radio" name="allow_heatmap" value="1"
+									<?php if ($form['allow_heatmap'] == 1)
+									{
+										echo " checked=\"checked\" ";
+									}?>> <?php echo Kohana::lang('ui_main.yes');?>
+									<input type="radio" name="allow_heatmap" value="0"
+									<?php if ($form['allow_heatmap'] !=1)
+									{
+										echo " checked=\"checked\" ";
+									}?>> <?php echo Kohana::lang('ui_main.no');?>
+								</div>
+
 								<h4><a href="#" class="tooltip" title="<?php echo Kohana::lang("tooltips.settings_default_category_colors"); ?>"><?php echo Kohana::lang('settings.site.default_category_colors');?></a></h4>
 								<div class="c_push">
 								<?php print form::input('default_map_all', $form['default_map_all'], ' class="text"'); ?>
