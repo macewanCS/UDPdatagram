@@ -1,5 +1,10 @@
-Ushahidi Platform
+UDPdatagram Ushahidi Platform Heatmap
 =================
+This is a fork of the Ushahidi Platform found at: https://github.com/ushahidi/Ushahidi_Web. For this project we integrated the heatmap into Ushahidi Platform. 
+More information about this project can be found at http://macewancmpt395.github.io/UDPdatagram/.
+
+Ushahidi Platform
+------------------
 The Ushahidi Platform is an open source web application for information collection, vizualisation and interactive 
 mapping. It allows people to collect and share their own stories using various mediums such
 as SMS, Web Forms, Email or Twitter. For more information about the platform and use cases (case studies) visit: http://www.ushahidi.com
