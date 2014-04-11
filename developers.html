@@ -1,1 +1,85 @@
-Developers
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <!--[if lt IE 9]>
+<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+    <title>UDPdatagram Heatmap by macewanCMPT395 Developers Page</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>UDPdatagram Heatmap</h1>
+          <h2>Integrating the heatmap within Ushahidi</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/macewanCMPT395/UDPdatagram/zipball/develop" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/macewanCMPT395/UDPdatagram/tarball/develop" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/macewanCMPT395/UDPdatagram" id="view-on-github" class="button"><span>View on GitHub</span></a>
+          <a href="index.html" id="view-on-github" class="button"><span>Getting Started</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <h1>
+<a name="developers" class="anchor" href="#developers"><span class="octicon octicon-link"></span></a>Developer's Page</h1>
+
+<p>Our repository can be found at <a href="https://github.com/macewanCMPT395/UDPdatagram/">https://github.com/macewanCMPT395/UDPdatagram/</a></p>
+
+<h2>
+<a name="changes" class="anchor" href="#changes"><span class="octicon octicon-link"></span></a>Changes made to the codebase</h2>
+
+<p>Bulk of our code changes are contained in the ushahidi.js and main_js.js. In ushahidi.js, we created a new heat map layer then added it to the main Ushahidi map. Most of the code is similar to the original Heatmap plugin’s code, but we had to make some changes to integrate with main Ushahidi layers smoothly, and also to be able to render our heat map with a specific category. Thus this involved implementing a callback function in main_js.js file, to retrieve the json url of the current category being selected. We then modified the original heatmap plugin function which was grabbing the longitude and latitude to do the counts of the locations and inserting into an array. Once we created the array with geospatial locations, we passed the array back to ushahidi.js to be calculated from the heat map layer. At this step, we reused the code from the original heat map plugin for the calculations. Lastly we create the heat map layer with those geospatial locations, and then add to the main Ushahidi map.</p>
+
+<h2>
+<a name="additional" class="anchor" href="#additional"><span class="octicon octicon-link"></span></a>Additional Changes </h2>
+
+<p>To add the admin settings to enable/disable the heat map, we had to edit:</p>
+<ul>
+  <li>media/js/ushahidi.js</li>
+  <li>application/controllers/admin/settings.php</li>
+  <li>application/views/admin/settings/main.php</li>
+  <li>themes/default/views/main/main_js.php</li>
+  <li></li>
+</ul>
+<p>Addition to this, a (key,value) => (allow_heatmap, 1) was added to the database in table "settings".</p>
+
+<p>To have a nice text appear in admin settings page for our selection, we had to make a couple of changes.
+In file(application/i18n/en_US/settings.php) within the site array, we added “'allow_heatmap' => 'Toggle Heatmap'”.
+</p>
+
+<p>Also in file(application/i18n/en_US/tooltips.php) within the action array,  we added “'settings_allow_heatmap' => 'This allows turning the heatmap on or off'”.</p>
+
+<p>Anyone can pick up our work from where we have left off. They will need to install ushahidi first, and then they can download our repository. Another way is to just clone our repository. </p>
+
+<p>Anyone who wished to get involved can do so by contributing to the help and documentation of the project, as well as cleaning up and optimizing code.</p>
+
+<h2><a name="pickup" class="anchor" href="#pickup"><span class="octicon octicon-link"></span></a>A brief description of how someone could pick up your work</h2>
+
+<p>You are all welcome to pick up our work, and you can start by following our installation instructions in your “Getting Started” page.</p>
+
+<h2>Features to be added</h2>
+<p>We could have the most heated areas on the map to blink/flash to show their severity of the area on the map. The heatmap can display a live creation of the heated ares as the incidents are being reported without the need to refresh the page.</p>
+        </section>
+
+        <footer>
+          UDPdatagram Heatmap is maintained by <a href="https://github.com/macewanCMPT395">macewanCMPT395</a><br>
+          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
