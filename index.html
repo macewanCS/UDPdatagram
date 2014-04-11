@@ -1,247 +1,79 @@
 <!DOCTYPE html>
 <html>
+
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-    <title>UDPdatagram Heatmap by macewanCMPT395</title>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="UDPdatagram Heatmap : Integrating the heatmap within Ushahidi" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>UDPdatagram Heatmap</title>
   </head>
 
   <body>
-    <div id="container">
-      <div class="inner">
 
-        <header>
-          <h1>UDPdatagram Heatmap</h1>
-          <h2>Integrating the heatmap within Ushahidi</h2>
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/macewanCMPT395/UDPdatagram">View on GitHub</a>
+
+          <h1 id="project_title">UDPdatagram Heatmap</h1>
+          <h2 id="project_tagline">Integrating the heatmap within Ushahidi</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/macewanCMPT395/UDPdatagram/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/macewanCMPT395/UDPdatagram/tarball/master">Download this project as a tar.gz file</a>
+            </section>
         </header>
-
-        <section id="downloads" class="clearfix">
-          <a href="https://github.com/macewanCMPT395/UDPdatagram/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
-          <a href="https://github.com/macewanCMPT395/UDPdatagram/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
-          <a href="https://github.com/macewanCMPT395/UDPdatagram" id="view-on-github" class="button"><span>View on GitHub</span></a>
-        </section>
-
-        <hr>
-
-        <section id="main_content">
-          <h1>
-<a name="ushahidi-platform" class="anchor" href="#ushahidi-platform"><span class="octicon octicon-link"></span></a>Ushahidi Platform</h1>
-
-<p>The Ushahidi Platform is an open source web application for information collection, vizualisation and interactive 
-mapping. It allows people to collect and share their own stories using various mediums such
-as SMS, Web Forms, Email or Twitter. For more information about the platform and use cases (case studies) visit: <a href="http://www.ushahidi.com">http://www.ushahidi.com</a></p>
-
-<h2>
-<a name="system-requirements" class="anchor" href="#system-requirements"><span class="octicon octicon-link"></span></a>System Requirements</h2>
-
-<p>To install the platform on your computer/server, the target system must meet the following requirements:</p>
-
-<ul>
-<li>PHP version 5.2.3 or greater (5.3 or greater is recommended)</li>
-<li>MySQL version 5.0 or greater</li>
-<li>An HTTP Server. Kohana, which Ushahidi is built on, is known to work with the following web servers:
-
-<ul>
-<li>Apache 1.3+</li>
-<li>Apache 2.0+</li>
-<li>lighttpd</li>
-<li>nginx</li>
-<li>Microsoft Internet Information Server (MS IIS)</li>
-</ul>
-</li>
-<li>Unicode support in the operating system</li>
-</ul><h2>
-<a name="required-extensions" class="anchor" href="#required-extensions"><span class="octicon octicon-link"></span></a>Required Extensions</h2>
-
-<p>The follwing is a list of PHP extensions that must be installed on your server in order for Ushahidi to run properly:</p>
-
-<ul>
-<li>PCRE (<a href="http://php.net/pcre">http://php.net/pcre</a>) must be compiled with –enable-utf8 and –enable-unicode-properties for UTF-8 functions to work properly.</li>
-<li>iconv (<a href="http://php.net/iconv">http://php.net/iconv</a>) is required for UTF-8 transliteration.</li>
-<li>mcrypt (<a href="http://php.net/mcrypt">http://php.net/mcrypt</a>) is required for encryption.</li>
-<li>SPL (<a href="http://php.net/spl">http://php.net/spl</a>) is required for several core libraries.</li>
-<li>mbstring (<a href="http://php.net/mbstring">http://php.net/mbstring</a>) which speeds up Kohana's UTF-8 functions.</li>
-<li>cURL (<a href="http://php.net/curl">http://php.net/curl</a>) which is used to access remote sites.</li>
-<li>MySQL (<a href="http://php.net/mysql">http://php.net/mysql</a>) is required for database access.</li>
-<li>IMAP (<a href="http://php.net/imap">http://php.net/imap</a>) is required for email functionality.</li>
-<li>GD (<a href="http://php.net/gd">http://php.net/gd</a>) is required for image processing</li>
-</ul><p><strong>NOTE: Need to figure out what extensions you already have installed on your server? Here are instructions to do just that: <a href="http://jontangerine.com/silo/php/phpinfo/">http://jontangerine.com/silo/php/phpinfo/</a></strong></p>
-
-<h2>
-<a name="optional-server-requirements" class="anchor" href="#optional-server-requirements"><span class="octicon octicon-link"></span></a>Optional Server Requirements</h2>
-
-<p>To use Ushahidi's "Clean URLS" feature on an Apache Web Server, you will need the mod_rewrite module
-and the ability to use local <code>.htaccess</code> files. </p>
-
-<h3>
-<a name="installing-mod_rewrite" class="anchor" href="#installing-mod_rewrite"><span class="octicon octicon-link"></span></a>Installing mod_rewrite</h3>
-
-<h5>
-<a name="debianubuntu-flavours-of-linux" class="anchor" href="#debianubuntu-flavours-of-linux"><span class="octicon octicon-link"></span></a>Debian/Ubuntu flavours of Linux</h5>
-
-<pre><code>sudo a2enmod rewrite
-</code></pre>
-
-<h5>
-<a name="centos-os-x-and-windows" class="anchor" href="#centos-os-x-and-windows"><span class="octicon octicon-link"></span></a>CentOS, OS X and Windows</h5>
-
-<p>Make sure the following line is <strong>NOT</strong> commented in your <code>httpd.conf</code></p>
-
-<pre><code>LoadModule rewrite_module
-</code></pre>
-
-<h3>
-<a name="additional-configuration" class="anchor" href="#additional-configuration"><span class="octicon octicon-link"></span></a>Additional Configuration</h3>
-
-<p>To check if local <code>.htaccess</code> files are allowed, verify that the "AllowOverride" directive in your Apache config 
-(for the web server directory in which you have installed Ushahidi) has been set to "All" i.e.:</p>
-
-<pre><code>&lt;Directory [your-document-root-directory]&gt;
-    ...
-    AllowOverride All
-    ...
-&lt;/Directory&gt;
-</code></pre>
-
-<p><strong>NOTE:</strong> </p>
-
-<ul>
-<li>Clean URLs means that the URLs of your deployment will not have the 'index.php' prefix</li>
-<li>You <strong>MUST</strong> restart your Apache web server after making the changes outlined above</li>
-</ul><h2>
-<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
-
-<ul>
-<li>
-<h4>
-<a name="download-and-extract-ushahidi" class="anchor" href="#download-and-extract-ushahidi"><span class="octicon octicon-link"></span></a>Download and extract Ushahidi</h4>
-
-<p>You can obtain the official release of the software from <a href="http://download.ushahidi.com">the download site</a>. 
-Alternatively, you can find downloads for the current and previous releases on the <a href="https://wiki.ushahidi.com/display/WIKI/Ushahidi+Platform+Downloads">Wiki</a></p>
-
-<p>To unzip/extract the archive on a typical Unix/Linux command line:</p>
-
-<pre><code>tar -xvf Ushahidi_Web-xxxx.tar.gz
-</code></pre>
-
-<p>or in the case of a zip file:</p>
-
-<pre><code>unzip Ushahidi_Web-xxxx.zip
-</code></pre>
-
-<p>This will create a new directory Ushahidi_Web-xxxx containing all the Ushahidi platform files and directories - Move the contents of this directory
-into a directory within your webserver's document root or your public HTML directory.</p>
-
-<h5>
-<a name="getting-the-latest-develop-code-caution-only-do-this-if-you-know-what-youre-doing" class="anchor" href="#getting-the-latest-develop-code-caution-only-do-this-if-you-know-what-youre-doing"><span class="octicon octicon-link"></span></a>Getting the latest develop code (CAUTION: only do this if you know what you're doing)</h5>
-
-<p>clone the latest code from github</p>
-
-<pre><code>git clone --recursive git://github.com/ushahidi/Ushahidi_Web.git
-</code></pre>
-
-<p>We add the recursive flag so that git will clone the submodules too      </p>
-</li>
-<li>
-<h4>
-<a name="ensure-the-following-directories-are-writable-ie-have-their-permission-values-set-to-777" class="anchor" href="#ensure-the-following-directories-are-writable-ie-have-their-permission-values-set-to-777"><span class="octicon octicon-link"></span></a>Ensure the following directories are writable (i.e. have their permission values set to 777)</h4>
-
-<ul>
-<li>application/config</li>
-<li>application/cache</li>
-<li>application/logs</li>
-<li>media/uploads</li>
-<li>.htaccess</li>
-</ul>
-<p>On Unix/Linux, you can change the permissions as follows:</p>
-
-<pre><code>cd path-to-webserver-document-root-directory
-chmod -R 777 application/config
-chmod -R 777 application/cache
-chmod -R 777 application/logs
-chmod -R 777 media/uploads
-chmod 777 .htaccess
-</code></pre>
-
-<p><strong>NOTE: The process of configuring file permissions is different for various operating systems. Here are some helpful links about permissions for the Windows (<a href="http://support.microsoft.com/kb/308419">http://support.microsoft.com/kb/308419</a>) and Unix (<a href="http://www.washington.edu/computing/unix/permissions.html">http://www.washington.edu/computing/unix/permissions.html</a>) operating systems.</strong></p>
-</li>
-<li>
-<h4>
-<a name="create-the-ushahidi-database" class="anchor" href="#create-the-ushahidi-database"><span class="octicon octicon-link"></span></a>Create the Ushahidi database</h4>
-
-<p>Ushahidi stores all its information in a database. You must therefore create this database in order to install Ushahidi. This is done as follows:</p>
-
-<pre><code>mysqladmin -u 'username' -p create 'databasename'
-</code></pre>
-
-<p>MySQL will prompt for the password for the  database password and then create the initial database files. Next, you must log in and set the 
-database access rights:</p>
-
-<pre><code>mysql -u 'username' -p
-</code></pre>
-
-<p>Again, you will be prompted for the 'username' database password. At the MySQL prompt, enter the following command:</p>
-
-<pre><code>GRANT SELECT, INSERT, DELETE, UPDATE, CREATE, DROP, ALTER, INDEX, LOCK TABLES on database.* 
-TO 'username'@'localhost' IDENTIFIED BY 'password';
-</code></pre>
-
-<p>Where:</p>
-
-<ul>
-<li>'databasename' is the name of your database</li>
-<li>'username@localhost' is the name of your MySQL account</li>
-<li>'password' is the password required for that username</li>
-</ul>
-<p><strong>NOTE: Your account must have all the privileges listed above in order to run Ushahidi on your webserver.</strong></p>
-</li>
-<li>
-<h4>
-<a name="run-the-install-script" class="anchor" href="#run-the-install-script"><span class="octicon octicon-link"></span></a>Run the install script</h4>
-
-<p>To run the install script, point your browser to the base url of your website: (e.g. <a href="http://www.example.com">http://www.example.com</a>).</p>
-
-<p>You will be guided through a series of screens to set up the database and site settings depending on the installation method you choose (Basic or Advanced)</p>
-</li>
-<li>
-<h4>
-<a name="clean-up" class="anchor" href="#clean-up"><span class="octicon octicon-link"></span></a>Clean up</h4>
-
-<h5>
-<a name="delete-the-installer" class="anchor" href="#delete-the-installer"><span class="octicon octicon-link"></span></a>Delete the installer</h5>
-
-<p>Leaving the installer files in your installation is a security risk.
-Now you've installed successfully, <strong>Delete the entire installer directory</strong></p>
-
-<h5>
-<a name="remove-write-permissions-from-config-files" class="anchor" href="#remove-write-permissions-from-config-files"><span class="octicon octicon-link"></span></a>Remove write permissions from config files</h5>
-
-<pre><code>cd path-to-webserver-document-root-directory
-chmod -R 755 application/config
-chmod 644 application/config/*
-chmod 644 .htaccess
-</code></pre>
-</li>
-</ul><h2>
-<a name="additional-information" class="anchor" href="#additional-information"><span class="octicon octicon-link"></span></a>Additional Information</h2>
-
-<p>For further references and documentation, head over to our wiki (<a href="http://wiki.ushahidi.com">http://wiki.ushahidi.com</a>). Also, we encourage you to drop by our forums (<a href="https://wiki.ushahidi.com/display/forums/Ushahidi+Forums">https://wiki.ushahidi.com/display/forums/Ushahidi+Forums</a>) if you have any additional questions or concerns.</p>
-        </section>
-
-        <footer>
-          UDPdatagram Heatmap is maintained by <a href="https://github.com/macewanCMPT395">macewanCMPT395</a><br>
-          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
-        </footer>
-
-        
-      </div>
     </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="getting-started" class="anchor" href="#getting-started"><span class="octicon octicon-link"></span></a>Getting Started</h1>
+
+<p>Ushahidi Platform is humanitarian open source software for information collection, visualization and interactive mapping. It is used to build tools for democratizing information, increasing transparency and lowering the barriers for individuals to share their stories. For this project we have integrated a heatmap plugin into the Ushahidi platform. The heatmap plugin was taken from David Kobia's heatmap plugin.
+The heatmap plugin is used to display all active reports from Ushahidi onto a map. It displays its own heatmap on a different page and shows all the reports as a whole, without the user capability of changing the view/category. For our project, we integrated the heatmap into the main ushahidi map, thus, giving users a chance to switch the view/categories and toggle the heatmap. In addition, we allow the admin a choice to enable or disable the heatmap in the admin dashboard. </p>
+
+<h2>
+<a name="what-the-project-is-useful" class="anchor" href="#what-the-project-is-useful"><span class="octicon octicon-link"></span></a>What the project is useful</h2>
+
+<p>During crisis situations this project will provide critical information to identify areas of great concern. Through Ushahidi, local observers can submit incidents using their mobile phones or the internet, while simultaneously creating a heatmap of events as they happen. Using the heatmap is simple, users can toggle between the original reports layer on/off, depending on their preference.  The heatmap can be used as an additional information cue for people to display geospatial archive of events. User can select different categories to display a heatmap of the incidents.</p>
+
+<h2>
+<a name="using-the-heatmap-" class="anchor" href="#using-the-heatmap-"><span class="octicon octicon-link"></span></a>Using the Heatmap </h2>
+
+<p><img src="http://imgur.com/9SLXQtd&amp;dbtT37b&amp;TfIsHCv&amp;sPu21sZ" alt="">
+Figure 1: Displaying the heatmap and reports</p>
+
+<p><img src="http://imgur.com/9SLXQtd&amp;dbtT37b&amp;TfIsHCv&amp;sPu21sZ#1" alt="">
+Figure 2: Toggle off the heatmap</p>
+
+<p><img src="http://imgur.com/9SLXQtd&amp;dbtT37b&amp;TfIsHCv&amp;sPu21sZ#2" alt="">
+Figure 3: Heatmap changes to "Under Attack" category</p>
+
+<p><img src="http://imgur.com/9SLXQtd&amp;dbtT37b&amp;TfIsHCv&amp;sPu21sZ#3" alt="">
+Figure 4: Heatmap changes to "Deaths" category</p>
+
+<p><img src="http://imgur.com/ZAn9kk3" alt="">
+Figure 5: Admin setting to enable/disable the heatmap</p>
+
+<h2>
+<a name="installation-instructions" class="anchor" href="#installation-instructions"><span class="octicon octicon-link"></span></a>Installation Instructions</h2>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">UDPdatagram Heatmap maintained by <a href="https://github.com/macewanCMPT395">macewanCMPT395</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
   </body>
 </html>
