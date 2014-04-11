@@ -1,4 +1,4 @@
-UDPdatagram Ushahidi Platform Heatmap
+UDPdatagram Heatmap
 =================
 This is a fork of the Ushahidi Platform found at: https://github.com/ushahidi/Ushahidi_Web. For this project we integrated the heatmap into Ushahidi Platform. 
 More information about this project can be found at http://macewancmpt395.github.io/UDPdatagram/.
