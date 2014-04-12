@@ -63,10 +63,10 @@ The heatmap plugin is used to display all active reports from Ushahidi onto a ma
 <li>Navigate to our repository, <a href="https://github.com/macewan/CMPT395/UDPdatagram">https://github.com/macewan/CMPT395/UDPdatagram</a> and copy the HTTPS clone URL.
 <img src="http://i.imgur.com/m7YEHe3.jpg?1" alt="">
 </li>
-<li>Open Linux terminal, navigate to your public_html folder and use the command <code>git clone “Paste HTTP clone URL that was copied”</code> It will ask you to enter your github username and password,  then it will clone the repository to public_html folder.
+<li>Open Linux terminal, navigate to your public_html folder and use the command <code>git clone “Paste HTTPs clone URL that was copied”</code>. It will ask you to enter your github username and password,  then it will clone the repository to public_html folder.
 <img src="http://i.imgur.com/hwqHyXI.jpg" alt="">
 </li>
-<li>Use the command <code>ls –l</code> to check out the permission on the cloned UPDdatagram folder, you will notice there is only owner permissions, use the command <code>chmod  -R go+rX  UDPdatagram</code> to change the permission
+<li>Use the command <code>ls –l</code> to check out the permission on the cloned UPDdatagram folder, you will notice there is only owner permissions, use the command <code>chmod  -R go+rX  UDPdatagram</code> to change the permission.
 <img src="http://i.imgur.com/mLGX8sF.jpg" alt="">
 </li>
 <li>Navigate to public_html/UDPdatagram/media/js, use command <code>ls –l</code> to check the permissions of files heat-openlayers.js, heatmap.js, Ushahidi.js, if they do not have permission use command <code>chmod 755 “filename”</code> go give files permissions. 
@@ -74,10 +74,10 @@ The heatmap plugin is used to display all active reports from Ushahidi onto a ma
 5.Open a browser and navigate to localhost/phpmyadmin, enter your credentials, click on databases tab, click on the your database that you have created,  navigate and select "setting" table.
 <img src="http://i.imgur.com/X0dbHCX.jpg" alt="">
 </li>
-<li>Select "insert tab"
+<li>Select "insert tab".
 <img src="http://i.imgur.com/UBnZhmE.jpg" alt="">
 </li>
-<li>Under value enter "allow_heatmap" for id and 1 for key
+<li>Under value enter "allow_heatmap" for id and 1 for key.
 <img src="http://i.imgur.com/ABdFCI5.jpg" alt="">
 </li>
 </ol>
