@@ -162,9 +162,7 @@ a.button span {
   background: transparent url(../images/octocat-icon.png) 12px 50% no-repeat;
 }
 #view-on-github {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+  margin-right: 0;
 }
 
 code, pre {
